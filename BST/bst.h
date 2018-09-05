@@ -39,10 +39,21 @@ template <typename K, typename V> class BST {
         }
         return false;
     }
-
+    bool _contain_r(K key, t_node *root) {
+        if (root == nullptr) {
+            return false;
+        }
+        if (key == root->key)
+            return true;
+        else if (key < root->key)
+            return _contain_r(key, root->left);
+        else
+            return _contain_r(key, root->right);
+    }
     // 向以node为根的二叉搜索树中,插入节点(key, value)
     // 返回插入新节点后的二叉搜索树的根
-    t_node *_insert_r(t_node *node, K key, V value) {
+
+    t_node *_insert_r(K key, V value, t_node *node) {
 
         if (node == NULL) {
             count++;
@@ -57,7 +68,17 @@ template <typename K, typename V> class BST {
             node->right = _insert_r(node->right, key, value);
         return node;
     }
-
+    // void _delete_min() {
+    //     if (root == nullptr)
+    //         return;
+        
+    //     t_node* node = root;
+    //     t_node* parent = root;
+    //         while(node->left!=nullptr){
+    //             parent=node;
+    //             node=node->left;
+    //         }
+    // }
     void wrong_insert(K key, V value, t_node *root) {
         //这是一个给二叉树插入键值的错误方法
         t_node *p = root;
@@ -118,31 +139,31 @@ template <typename K, typename V> class BST {
 
     void _insert(K key, V value, t_node *&root) {
         //使用指针的引用解决了当root=nullptr时无法初始化的问题
+        //当然也可以直接用this->root解决问题
         if (root == nullptr) {
             root = new t_node(key, value);
             count++;
             return;
         }
+
         t_node *node = root;
         t_node *parent = nullptr;
-
-        bool is_left = true;
+        // bool is_left = true;
 
         while (node != nullptr) {
+            parent = node;
             if (key == node->key) {
                 node->value = value;
                 return;
             } else if (key < node->key) {
-                parent = node;
                 node = node->left;
-                is_left = true;
+                // is_left = true;
             } else {
-                parent = node;
                 node = node->right;
-                is_left = false;
+                // is_left = false;
             }
         }
-        if (is_left) {
+        if (key < parent->key) {
             parent->left = new t_node(key, value);
             count++;
             return;
@@ -152,7 +173,7 @@ template <typename K, typename V> class BST {
             return;
         }
     }
-    V *search(K key, t_node *root) {
+    V *_search(K key, t_node *root) {
         t_node *p = root;
         while (p != nullptr) {
             if (p->key == key)
@@ -163,6 +184,18 @@ template <typename K, typename V> class BST {
                 p = p->right;
         }
         return nullptr;
+    }
+
+    V *_search_r(K key, t_node *root) {
+        if (root == nullptr)
+            return nullptr;
+
+        if (key == root->key)
+            return &(root->value);
+        else if (key < root->key)
+            return _search_r(key, root->left);
+        else
+            return _search_r(key, root->right);
     }
 
     void _pre_order(t_node *root) {
@@ -229,11 +262,12 @@ template <typename K, typename V> class BST {
     // void insert1(K key, V value) { _insert(key, value, root); }
 
     void insert(K key, V value) { _insert(key, value, root); }
-    void insert_r(K key, V value) { root = _insert_r(root, key, value); }
+    void insert_r(K key, V value) { root = _insert_r(key, value, root); }
     bool contain(K key) { return _contain(key, root); }
-    V *search(K key) { return search(key, root); };
+    bool contain_r(K key) { return _contain_r(key, root); }
+    V *search(K key) { return _search(key, root); };
+    V *search_r(K key) { return _search_r(key, root); }
 
-    // void initialize(K key, V value) { _initialize(key, value, root); }
     void pre_order() { _pre_order(root); }
     void mid_order() { _mid_order(root); }
     void post_order() { _post_order(root); }
