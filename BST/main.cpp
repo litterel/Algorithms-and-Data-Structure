@@ -43,11 +43,11 @@ template <typename T> void display_array(T arr[], int n) {
 
 int main() {
 
-    int n = 100;
+    int n = 15;
     int *values = new int[n];
     int *arr = new int[n]; //尽量避免使用 int a[n]这种创建方式，会出现segmenta
                            // fault的报错。
-    
+
     for (int i = 0; i < n; i++) {
         arr[i] = i;
         values[i] = 0;
@@ -59,13 +59,18 @@ int main() {
 
     BST<int, int> my_tree;
     for (int i = 0; i < n; i++) {
-        my_tree.insert(arr[i], 0);
+        my_tree.insert_ref(arr[i], 0);
     }
+    cout << "Original array: " << endl;
     test_array::display_array(arr, n);
     // my_tree.pre_order();
-
+    
     cout << "size: " << my_tree.get_size() << endl;
     // cout << "if null: " << my_tree.is_null() << endl;
+
+    my_tree.delete_min_ref();
+    my_tree.delete_max_ref();
+
     auto p = my_tree.search_r(5);
     cout << "original value: " << *p << endl;
     *p = 12;

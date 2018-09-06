@@ -50,12 +50,25 @@ template <typename K, typename V> class BST {
         else
             return _contain_r(key, root->right);
     }
-    // 向以node为根的二叉搜索树中,插入节点(key, value)
-    // 返回插入新节点后的二叉搜索树的根
+
+    void _insert_ref(K key, V value, t_node *&node) {
+        //把_insert_r参数中的指针改为指针的引用，函数就可以不用返回值，似乎更直观一些
+        if (node == nullptr) {
+            count++;
+            node = new t_node(key, value);
+        }
+        if (key == node->key) {
+            node->value = value;
+        } else if (key < node->key) {
+            _insert_ref(key, value, node->left);
+        } else
+            _insert_ref(key, value, node->right);
+    }
 
     t_node *_insert_r(K key, V value, t_node *node) {
-
-        if (node == NULL) {
+        // 向以node为根的二叉搜索树中,插入节点(key, value)
+        // 返回插入新节点后的二叉搜索树的根
+        if (node == nullptr) {
             count++;
             return new t_node(key, value);
         }
@@ -68,10 +81,11 @@ template <typename K, typename V> class BST {
             node->right = _insert_r(node->right, key, value);
         return node;
     }
+
     // void _delete_min() {
     //     if (root == nullptr)
     //         return;
-        
+
     //     t_node* node = root;
     //     t_node* parent = root;
     //         while(node->left!=nullptr){
@@ -239,10 +253,61 @@ template <typename K, typename V> class BST {
         }
     }
 
-    void destroy(t_node *&root) {
-        if (root == nullptr)
+    t_node *_delete_min_r(t_node *node) {
+        if (this->root == nullptr)
+            return nullptr;
+
+        if (node->left == nullptr) {
+            t_node *p = node->right;
+            delete node;
+            count--;
+            return p;
+        } else
+            node->left = _delete_min_r(node->left);
+    }
+
+    void _delete_min_ref(t_node *&node) {
+        if (this->root == nullptr)
             return;
 
+        if (node->left == nullptr) {
+            t_node *p = node;
+            node = node->right;
+            delete p;
+            count--;
+        } else
+            _delete_min_ref(node->left);
+    }
+
+    t_node *_delete_max_r(t_node *node) {
+        if (this->root == nullptr)
+            return nullptr;
+
+        if (node->right == nullptr) {
+            t_node *p = node->left;
+            delete node;
+            count--;
+            return p;
+        } else
+            node->right = _delete_max_r(node->right);
+    }
+
+    void _delete_max_ref(t_node *&node) {
+        if (this->root == nullptr)
+            return;
+        if (node->right == nullptr) {
+            t_node *p = node;
+            node = node->left;
+            delete p;
+            count--;
+        } else
+            _delete_max_ref(node->right);
+    }
+
+    void destroy(t_node *&root) {
+        //指针的引用十分好用，如果传入指针的话，函数的返回值就得是t_node*，不然无法将node指向nullptr
+        if (root == nullptr)
+            return;
         destroy(root->left);
         destroy(root->right);
         delete root;
@@ -255,7 +320,7 @@ template <typename K, typename V> class BST {
         root = nullptr;
         count = 0;
     }
-
+    ~BST() { destroy(root); }
     bool is_null() { return root == nullptr; }
     int get_size() { return count; }
     bool is_empty() { return (count == 0); }
@@ -263,11 +328,17 @@ template <typename K, typename V> class BST {
 
     void insert(K key, V value) { _insert(key, value, root); }
     void insert_r(K key, V value) { root = _insert_r(key, value, root); }
+    void insert_ref(K key, V value) { _insert_ref(key, value, root); }
     bool contain(K key) { return _contain(key, root); }
     bool contain_r(K key) { return _contain_r(key, root); }
+
     V *search(K key) { return _search(key, root); };
     V *search_r(K key) { return _search_r(key, root); }
 
+    void delete_max_r() { root = _delete_max_r(root); }
+    void delete_min_r() { root = _delete_min_r(root); }
+    void delete_min_ref() { _delete_min_ref(root); }
+    void delete_max_ref() { _delete_max_ref(root); }
     void pre_order() { _pre_order(root); }
     void mid_order() { _mid_order(root); }
     void post_order() { _post_order(root); }
