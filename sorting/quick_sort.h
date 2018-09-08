@@ -106,4 +106,30 @@ template <typename T> void qsort_nonrecur(T a[], int low, int high) {
     }
 }
 
+template <typename T> T quick_find(T a[], int l, int r, int m) {
+
+    int i = l;
+    int j = r;
+    T pivot = a[l];
+    while (i < j) {
+        while (a[j] >= pivot && i < j)
+            j--;
+        while (a[i] <= pivot && i < j)
+            i++;
+        std::swap(a[i], a[j]);
+    }
+    std::swap(a[i], a[l]);
+    if (i == m) {
+        return a[i];
+    } else if (m < i)
+        return quick_find(a, l, i - 1, m);
+    else
+        return quick_find(a, l + 1, r, m);
+}
+
+template <typename T> T find_mth(T a[], int n, int m) {
+    m = m - 1;
+    return quick_find(a, 0, n - 1, m);
+}
+
 #endif

@@ -27,6 +27,8 @@ template <typename T> class min_heap {
         }
     }
 
+    
+
   public:
     min_heap(int capacity) {
         this->capacity = capacity;

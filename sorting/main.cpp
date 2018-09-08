@@ -21,7 +21,7 @@ int main() {
     }
     cout << endl;
 
-    clock_t time1 = clock();
+    time_t time1 = clock();
     // sort(x.begin(),x.end()); //stl内置排序算法，作为参照
     // select_sort(x);
     // select_sort2(x);
@@ -36,13 +36,9 @@ int main() {
     // quick_sort(xx, 0, n - 1);
     // qsort_nonrecur(xx,0,n-1);
 
-    clock_t time2 = clock();
-    auto intervals = (time2 - time1) * 1.0 / 1000;
-    cout << "time needed for sorting: " << intervals << " ms." << endl;
-    // my_sort::test_sort("insert_sort", select_sort<int>, xx, n);
-    // my_sort::display(xx, n);
-    // for (auto item : x)
-    // cout << item << " ";
+    time_t time2 = clock();
+    auto intervals = double(time2 - time1)  / CLOCKS_PER_SEC;
+    cout << "time needed for sorting: " << intervals << " s." << endl;
 
     max_heap<int> myheap(xx, n);
     myheap.display();
@@ -50,7 +46,10 @@ int main() {
         cout << myheap.pop() << " ";
     }
     cout << endl;
-    cout << myheap.get_size();
+    cout << myheap.get_size() << endl;
+
+    cout<<find_mth(xx, n, 40) << endl;
+
     delete[] xx;
     xx = nullptr;
     return 0;

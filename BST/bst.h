@@ -18,11 +18,17 @@ template <typename K, typename V> struct t_node {
         left = nullptr;
         right = nullptr;
     }
+    t_node(t_node *node) {
+        this->key = node->key;
+        this->value = node->value;
+        this->left = this->right = nullptr;
+    }
 };
 
 template <typename K, typename V> class BST {
     typedef t_node<K, V> t_node;
-
+    typedef t_node<K,V>*
+ 
   private:
     t_node *root;
     int count;
@@ -212,6 +218,17 @@ template <typename K, typename V> class BST {
             return _search_r(key, root->right);
     }
 
+    t_node *_locate(K key, t_node *node) {
+        if (node == nullptr)
+            return nullptr;
+        if (key == node->key)
+            return node;
+        else if (key < node->key) {
+            return _locate(key, node->left);
+        } else
+            return _locate(key, node->right);
+    }
+
     void _pre_order(t_node *root) {
         if (root == nullptr)
             return;
@@ -253,23 +270,34 @@ template <typename K, typename V> class BST {
         }
     }
 
-    t_node *_delete_min_r(t_node *node) {
-        if (this->root == nullptr)
-            return nullptr;
+    t_node *_min(t_node *node) {
+        if (node->left == nullptr) {
+            return node;
+        }
+        return _min(node->left);
+    }
 
+    t_node *_max(t_node *node) {
+        if (node->right == nullptr) {
+            return node;
+        }
+        return _max(node->right);
+    }
+    
+    
+    t_node *_delete_min_r(t_node *node) {
         if (node->left == nullptr) {
             t_node *p = node->right;
             delete node;
             count--;
             return p;
-        } else
+        } else {
             node->left = _delete_min_r(node->left);
+            return node;
+        }
     }
 
     void _delete_min_ref(t_node *&node) {
-        if (this->root == nullptr)
-            return;
-
         if (node->left == nullptr) {
             t_node *p = node;
             node = node->right;
@@ -280,21 +308,18 @@ template <typename K, typename V> class BST {
     }
 
     t_node *_delete_max_r(t_node *node) {
-        if (this->root == nullptr)
-            return nullptr;
-
         if (node->right == nullptr) {
             t_node *p = node->left;
             delete node;
             count--;
             return p;
-        } else
+        } else {
             node->right = _delete_max_r(node->right);
+            return node;
+        }
     }
 
     void _delete_max_ref(t_node *&node) {
-        if (this->root == nullptr)
-            return;
         if (node->right == nullptr) {
             t_node *p = node;
             node = node->left;
@@ -304,6 +329,40 @@ template <typename K, typename V> class BST {
             _delete_max_ref(node->right);
     }
 
+    t_node *_remove(K key, t_node *node) {
+        if (node == nullptr)
+            return nullptr;
+
+        if (key < node->key) {
+            node->left = _remove(key, node->left);
+            return node;
+        } else if (key > node->key) {
+            node->right = _remove(key, node->right);
+            return node;
+        }
+
+        else {
+            if (node->left == nullptr) {
+                t_node *p_right = node->right;
+                delete node;
+                count--;
+                return p_right;
+            }
+            if (node->right == nullptr) {
+                t_node *p_left = node->left;
+                delete node;
+                count--;
+                return p_left;
+            }
+
+            t_node *new_node = new t_node(_min(node->right));
+            new_node->right = _delete_min_r(node->right);
+            new_node->left = node->left;
+
+            delete node;
+            return new_node;
+        }
+    }
     void destroy(t_node *&root) {
         //指针的引用十分好用，如果传入指针的话，函数的返回值就得是t_node*，不然无法将node指向nullptr
         if (root == nullptr)
@@ -335,10 +394,26 @@ template <typename K, typename V> class BST {
     V *search(K key) { return _search(key, root); };
     V *search_r(K key) { return _search_r(key, root); }
 
-    void delete_max_r() { root = _delete_max_r(root); }
-    void delete_min_r() { root = _delete_min_r(root); }
-    void delete_min_ref() { _delete_min_ref(root); }
-    void delete_max_ref() { _delete_max_ref(root); }
+    void delete_max_r() {
+        if (root)
+            root = _delete_max_r(root);
+    }
+    void delete_min_r() {
+        if (root)
+            root = _delete_min_r(root);
+    }
+    void delete_min_ref() {
+        if (root)
+            _delete_min_ref(root);
+    }
+    void delete_max_ref() {
+        if (root)
+            _delete_max_ref(root);
+    }
+    K min() { return _min(root)->key; }
+    K max() { return _max(root)->key; }
+
+    void remove(K key) { root = _remove(key, root); }
     void pre_order() { _pre_order(root); }
     void mid_order() { _mid_order(root); }
     void post_order() { _post_order(root); }

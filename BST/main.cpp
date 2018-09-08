@@ -1,19 +1,12 @@
-#include "bst.h"
+//#include "bst.h"
+
+#include "bst_new.h"
+#include <ctime>
 #include <iostream>
 #include <random>
 #include <string>
 #include <vector>
 using namespace std;
-
-class test_class {
-  private:
-    int m;
-
-  public:
-    test_class() { m = 1; }
-    int *get_item() { return &m; }
-    void display() { cout << m << endl; }
-};
 
 namespace test_array {
 template <typename T> void generate_random_permutation(T arr[], int n) {
@@ -26,7 +19,7 @@ template <typename T> void generate_random_permutation(T arr[], int n) {
 }
 
 template <typename T> void generate_quasi_sorted_array(T arr[], int n) {
-    auto rng = default_random_engine{1};
+    auto rng = default_random_engine{2};
     auto inx = uniform_int_distribution<>(0, n - 1);
     for (int i = 0; i < n / 20; i++) {
         swap(arr[inx(rng)], arr[inx(rng)]);
@@ -43,7 +36,7 @@ template <typename T> void display_array(T arr[], int n) {
 
 int main() {
 
-    int n = 15;
+    int n = 10;
     int *values = new int[n];
     int *arr = new int[n]; //尽量避免使用 int a[n]这种创建方式，会出现segmenta
                            // fault的报错。
@@ -56,32 +49,31 @@ int main() {
     test_array::generate_random_permutation(arr, n);
     // test_array::display_array(arr, n);
     cout << endl;
-
-    BST<int, int> my_tree;
+    time_t time1 = clock();
+    bst<int, int> my_tree;
     for (int i = 0; i < n; i++) {
-        my_tree.insert_ref(arr[i], 0);
+        my_tree.insert(arr[i], 0);
     }
-    cout << "Original array: " << endl;
-    test_array::display_array(arr, n);
+    time_t time2 = clock();
+    auto intervals = double(time2 - time1) / CLOCKS_PER_SEC;
+    cout << "time needed for constructing tree: " << intervals << " s." << endl;
+
+    // cout << "Original array: " << endl;
+    // test_array::display_array(arr, n);
     // my_tree.pre_order();
-    
+    //my_tree.remove_min();
+    //my_tree.remove_max();
+    my_tree.remove(2);
     cout << "size: " << my_tree.get_size() << endl;
-    // cout << "if null: " << my_tree.is_null() << endl;
 
-    my_tree.delete_min_ref();
-    my_tree.delete_max_ref();
-
-    auto p = my_tree.search_r(5);
-    cout << "original value: " << *p << endl;
-    *p = 12;
-    cout << "new value: " << *p << endl;
-    cout << "if contain: " << my_tree.contain_r(18) << endl;
+    cout << "rank is: " << my_tree.rank(6) << endl;
+    cout << "select element: " << my_tree.select(3) << endl;
     cout << "pre order: " << endl;
     my_tree.pre_order();
     cout << endl;
 
     cout << "in order: " << endl;
-    my_tree.mid_order();
+    my_tree.in_order();
     cout << endl;
 
     cout << "post order: " << endl;
@@ -91,5 +83,8 @@ int main() {
     cout << "layer order: " << endl;
     my_tree.layer_order();
     cout << endl;
+
+    cout << my_tree.min() << "\t" << my_tree.max() << endl;
+
     return 0;
 }
