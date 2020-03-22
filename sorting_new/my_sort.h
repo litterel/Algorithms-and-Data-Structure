@@ -128,7 +128,7 @@ void merge_sort(T arr[], int n, bool (*compare)(T, T))
 template <typename T>
 void merge_bottom_up(T arr[], int n, bool (*compare)(T, T))
 {
-    int sz = 15; // To enhance performances, batch-order the array with insert sort before iteration.
+    int sz = 15; // To enhance performances, batch-order the array with insert sort before starting iteration.
     for (int i = 0; i < n; i += sz)
         insert_sort(arr + i, min(sz, n), compare);
     T *assist = new T[n];
