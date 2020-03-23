@@ -10,8 +10,8 @@ int main()
     //template <typename T>
     //bool (*compare)(T, T) = my_less; //why this method fails.
     bool (*compare)(int, int) = my_less;
-    int n = 100000;
-    int *arr = sort_test_helper::generat_random_array(n, 0, 10);
+    int n = 100;
+    int *arr = sort_test_helper::generat_random_array(n, 0, 100);
     //int *arr = sort_test_helper::generate_nearly_ordered_array(n, 1000, compare);
     int *arr2 = sort_test_helper::copy_array(arr, n);
     int *arr3 = sort_test_helper::copy_array(arr, n);
@@ -24,9 +24,10 @@ int main()
     */
 
     cout << "size of array: " << n << endl;
-    sort_test_helper::test_sort(arr, n, "merge_sort", merge_sort, compare);
+    //sort_test_helper::test_sort(arr, n, "merge_sort", merge_sort, compare);
     //sort_test_helper::test_sort(arr2, n, "insert_sort", insert_sort, compare);
-    sort_test_helper::test_sort(arr3, n, "merge_sort_2", merge_bottom_up, compare);
+    //sort_test_helper::test_sort(arr3, n, "merge_sort_2", merge_bottom_up, compare);
+    sort_test_helper::test_heap(arr4,n);
     //sort_test_helper::test_sort(arr4, n, "quick_sort", quick_sort, compare);
     /*
     student d[5] = {{"D", 90}, {"C", 100}, {"A", 85}, {"B", 80}, {"E", 80}};

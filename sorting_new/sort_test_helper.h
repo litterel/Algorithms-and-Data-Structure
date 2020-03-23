@@ -4,6 +4,7 @@
 #include <iostream>
 #include <ctime>
 #include <cassert>
+#include "heap_sort.h"
 
 using namespace std;
 
@@ -82,6 +83,17 @@ void test_sort(T arr[], int n, string sort_name, void (*sort)(T[], int, bool (*c
     clock_t end_time = clock();
     assert(is_sorted(arr, n, compare));
     cout << sort_name << ": " << double(end_time - start_time) / CLOCKS_PER_SEC << " s" << endl;
+}
+template <typename T>
+void test_heap(T *arr, int n)
+{
+    max_heap<T> my_heap = max_heap<T>(n);
+    for (int i = 0; i < n; i++)
+        my_heap.insert(arr[i]);
+    for (int i = 0; i < n; i++)
+        arr[n - 1 - i] = my_heap.pop_max();
+    print_array(arr, n);
+    return;
 }
 } // namespace sort_test_helper
 
