@@ -13,9 +13,9 @@ private:
     void shift_up(int n)
     {
         T temp = heap[n];
-        while (n > 1 && heap[n / 2] < heap[n])
+        while (n > 1 && heap[n / 2] < temp)
         {
-            heap[n / 2] = heap[n];
+            heap[n] = heap[n / 2];
             n = n / 2;
         }
         heap[n] = temp;
@@ -23,16 +23,26 @@ private:
     }
     void shift_down(int n)
     {
+        T temp = heap[n];
         while (2 * n <= count)
         {
+
             int max_inx = 2 * n;
             if (max_inx + 1 <= count && heap[max_inx + 1] > heap[max_inx])
                 max_inx = 2 * n + 1;
-            if (heap[max_inx] <= heap[n])
+            if (heap[max_inx] <= temp)
                 break;
-            std::swap(heap[max_inx], heap[n]);
+            heap[n] = heap[max_inx];
+            //std::swap(heap[max_inx], heap[n]);
             n = max_inx;
         }
+        heap[n] = temp;
+        return;
+    }
+    void heapify()
+    {
+        for (int i = count / 2; i >= 1; i--)
+            shift_down(i);
         return;
     }
 
@@ -42,6 +52,15 @@ public:
         capacity = n;
         heap = new T[capacity + 1];
         int count = 0;
+    }
+    max_heap(T *arr, int n)
+    {
+        capacity = n;
+        heap = new T[capacity + 1];
+        count = n;
+        for (int i = 0; i < n; i++)
+            heap[i + 1] = arr[i];
+        heapify();
     }
     ~max_heap()
     {
@@ -78,4 +97,14 @@ public:
     }
 };
 
+template <typename T>
+void my_heap_sort(T arr[], int n, bool (*comapre)(T, T))
+{
+    max_heap<T> my_heap = max_heap<T>(arr, n);
+    for (int i = 0; i < n; i++)
+    {
+        arr[n - 1 - i] = my_heap.pop_max();
+    }
+    return;
+}
 #endif

@@ -13,6 +13,7 @@ namespace sort_test_helper
 
 int *generat_random_array(int n, int rangeL, int rangeR)
 {
+    
     assert(rangeL <= rangeR);
     int *arr = new int[n];
     srand(time(NULL));
@@ -93,6 +94,8 @@ void test_heap(T *arr, int n)
     for (int i = 0; i < n; i++)
         arr[n - 1 - i] = my_heap.pop_max();
     print_array(arr, n);
+    if (is_sorted(arr, n, my_less<T>))
+        std::cout << "sorted!" << std::endl;
     return;
 }
 } // namespace sort_test_helper
