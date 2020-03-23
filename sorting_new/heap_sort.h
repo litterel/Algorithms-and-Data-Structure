@@ -12,11 +12,14 @@ private:
 
     void shift_up(int n)
     {
+        T temp = heap[n];
         while (n > 1 && heap[n / 2] < heap[n])
         {
-            std::swap(heap[n / 2], heap[n]);
+            heap[n / 2] = heap[n];
             n = n / 2;
         }
+        heap[n] = temp;
+        return;
     }
     void shift_down(int n)
     {

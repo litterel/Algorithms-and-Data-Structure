@@ -9,7 +9,7 @@ namespace UF_helper
 {
 void test_UF(int n)
 {
-    auto UF = union_find(n);
+    union_find UF = union_find(n);
     srand(time(NULL));
     time_t start_time = clock();
     for (int i = 0; i < n; i++)

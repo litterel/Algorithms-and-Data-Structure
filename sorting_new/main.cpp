@@ -10,8 +10,8 @@ int main()
     //template <typename T>
     //bool (*compare)(T, T) = my_less; //why this method fails.
     bool (*compare)(int, int) = my_less;
-    int n = 100;
-    int *arr = sort_test_helper::generat_random_array(n, 0, 100);
+    int n = 20;
+    int *arr = sort_test_helper::generat_random_array(n, 0, 50);
     //int *arr = sort_test_helper::generate_nearly_ordered_array(n, 1000, compare);
     int *arr2 = sort_test_helper::copy_array(arr, n);
     int *arr3 = sort_test_helper::copy_array(arr, n);
