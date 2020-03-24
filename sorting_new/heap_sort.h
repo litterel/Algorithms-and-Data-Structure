@@ -26,7 +26,6 @@ private:
         T temp = heap[n];
         while (2 * n <= count)
         {
-
             int max_inx = 2 * n;
             if (max_inx + 1 <= count && heap[max_inx + 1] > heap[max_inx])
                 max_inx = 2 * n + 1;
@@ -98,12 +97,78 @@ public:
 };
 
 template <typename T>
+//不需要新建堆，直接将原数组转化为堆
+class max_heap_inplace
+{
+private:
+    T *heap = NULL;
+    //int capacity;
+    int count = 0;
+    void shift_up(int n)
+    {
+        T temp = heap[n];
+        while (n > 0 && heap[(n - 1) / 2] < temp)
+        {
+            heap[n] = heap[(n - 1) / 2];
+            n = (n - 1) / 2;
+        }
+        heap[n] = temp;
+        return;
+    }
+
+    void shift_down(int n)
+    {
+        T temp = heap[n];
+        while (2 * n + 1 <= count - 1)
+        {
+            int max_inx = 2 * n + 1;
+            if (max_inx + 1 <= count - 1 && heap[max_inx + 1] > heap[max_inx])
+                max_inx = max_inx + 1;
+            if (temp >= heap[max_inx])
+                break;
+            heap[n] = heap[max_inx];
+            n = max_inx;
+        }
+        heap[n] = temp;
+        return;
+    }
+
+public:
+    max_heap_inplace(T arr[], int n)
+    {
+        heap = arr;
+        count = n;
+        //capacity = n;
+        for (int i = (n  - 1) / 2; i >= 0; i--)
+            shift_down(i);
+    }
+    void pop_max()
+    {
+        if (count == 0)
+            std::cout << "Empty!" << std::endl;
+        std::swap(heap[0], heap[count - 1]);
+        count--;
+        shift_down(0);
+    }
+};
+
+template <typename T>
 void my_heap_sort(T arr[], int n, bool (*comapre)(T, T))
 {
     max_heap<T> my_heap = max_heap<T>(arr, n);
     for (int i = 0; i < n; i++)
     {
         arr[n - 1 - i] = my_heap.pop_max();
+    }
+    return;
+}
+template <typename T>
+void heap_sort_inplace(T arr[], int n, bool (*compare)(T, T))
+{
+    max_heap_inplace<T> my_heap = max_heap_inplace<T>(arr, n);
+    for (int i = 0; i < n-1; i++)
+    {
+        my_heap.pop_max();
     }
     return;
 }
