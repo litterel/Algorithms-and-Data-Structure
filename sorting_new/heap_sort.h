@@ -1,6 +1,7 @@
 #ifndef HEAP_SORT_H
 #define HEAP_SORT_H
 #include <iostream>
+#include <cassert>
 template <typename T>
 
 class max_heap
@@ -83,11 +84,14 @@ public:
 
     T pop_max()
     {
+        assert(count>0);
+        /*
         if (count == 0)
         {
             std::cout << "Empty heap!" << std::endl;
             return NULL;
         }
+        */
         T ret = heap[1];
         std::swap(heap[1], heap[count]);
         count--;
